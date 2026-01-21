@@ -21,11 +21,19 @@ class FFuncModel:
             'exp': np.exp,
             'sin': np.sin,
             'cos': np.cos,
+            'tan': np.tan,
             'log': np.log,
             'log10': np.log10,
             'sqrt': np.sqrt,
             'pi': np.pi,
-            'power': np.power
+            'power': np.power,
+            'tanh': np.tanh,
+            'sinh': np.sinh,
+            'cosh': np.cosh,
+            'arctan': np.arctan,
+            'arcsin': np.arcsin,
+            'arccos': np.arccos,
+            'abs': np.abs
         }
         
         # Sort parameter names to match the *params order
