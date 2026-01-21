@@ -1,0 +1,37 @@
+Idea general : un sistema en el que podamos cargar datos y hacer ajustes estilo "curve fiting" donde podamos escoger el tipo de ajuste que queremos,  y asi como crear "custom equations" 
+
+
+UI  --  htmls, css, js
+
+structura Principal
+AppRoot: El contenedor principal de la aplicación.
+PlotCanvas: El área de dibujo del gráfico.
+SplitAxisController: Lógica para manejar los ejes divididos.
+AnnotationLayer: Capa superior para flechas y textos.
+Datos y Paneles
+DataSidebar: El panel lateral principal.
+DatasetItem: El control individual para cada set de datos en la lista.
+FittingPanel: Panel de configuración para ajustes matemáticos.
+TabbedControlPane: El contenedor de pestañas (Datos, Ajustes, Estilo).
+Componentes de UI
+FontPicker: Selector de fuentes avanzado.
+ColorPicker: Selector de colores con transparencia.
+LegendConfigurator: Editor de leyendas.
+PreviewDialog: Ventana modal de previsualización.
+MainToolbar: Barra de herramientas superior.
+Lógica
+
+
+MathCore: Modulo de lógica matemática (sin UI). python
+
+
+existeuna carpeta llamada funciotions con algunas funciones precargadas para los ajustes.
+
+
+
+DataLoader: (Nuevo) Crucial. Para leer archivos Excel (.xlsx), CSV, ODS y limpiar los datos importados.
+FFuncParser: Para entender tus modelos .ffunc.
+OptimizationEngine: El cerebro del ajuste (scipy).
+ExpressionEvaluator: Calculadora matemática rápida (numpy).
+ResidualCalculator: Estadísticas de error.
+ExportManager: (Nuevo) Para guardar resultados y reportes.
