@@ -36,14 +36,6 @@ class FFuncModel:
             'arcsin': np.arcsin,
             'arccos': np.arccos,
             'abs': np.abs
-            'power': np.power,
-            'tanh': np.tanh,
-            'sinh': np.sinh,
-            'cosh': np.cosh,
-            'arctan': np.arctan,
-            'arcsin': np.arcsin,
-            'arccos': np.arccos,
-            'abs': np.abs
         }
         
         # Sort parameter names to match the *params order
