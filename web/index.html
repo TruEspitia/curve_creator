@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Curve Creator</title>
+    <!-- Plotly.js -->
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+    <!-- Eel -->
+    <script type="text/javascript" src="/eel.js"></script>
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>Curve Creator</h2>
+            </div>
+
+            <div class="sidebar-section">
+                <h3>Data</h3>
+                <button id="btn-load-data" class="btn primary">Load Data File</button>
+                <div id="data-file-info" class="file-info">No file loaded</div>
+
+                <div id="column-selectors" style="display: none; margin-top: 10px;">
+                    <label for="select-x-col" style="display:block; font-size: 0.8em; margin-bottom: 2px;">X
+                        Column:</label>
+                    <select id="select-x-col" class="dropdown"></select>
+
+                    <label for="select-y-col"
+                        style="display:block; font-size: 0.8em; margin-bottom: 2px; margin-top: 5px;">Y Column:</label>
+                    <select id="select-y-col" class="dropdown"></select>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <h3>Fitting Model</h3>
+                <div class="tabs">
+                    <button class="tab-btn active" data-tab="predefined">Library</button>
+                    <button class="tab-btn" data-tab="custom">Custom</button>
+                </div>
+
+                <!-- Predefined Section -->
+                <div id="tab-predefined" class="tab-content">
+                    <select id="select-function" class="dropdown">
+                        <option value="" disabled selected>Select Function...</option>
+                    </select>
+                    <div id="function-details" class="details-box" style="margin-top: 10px;">
+                        <!-- Params description will go here -->
+                    </div>
+                </div>
+
+                <!-- Custom Section -->
+                <div id="tab-custom" class="tab-content" style="display: none;">
+                    <label for="custom-formula" style="display:block; font-size: 0.8em; margin-bottom: 2px;">Formula
+                        (e.g. y = a*x + b):</label>
+                    <input type="text" id="custom-formula" class="input-text" placeholder="a * x + b">
+
+                    <label for="custom-params"
+                        style="display:block; font-size: 0.8em; margin-bottom: 2px; margin-top: 10px;">Parameters (comma
+                        separated):</label>
+                    <input type="text" id="custom-params" class="input-text" placeholder="a=1, b=0">
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <button id="btn-fit" class="btn success" disabled>Perform Fit</button>
+            </div>
+
+            <div class="sidebar-section">
+                <h3>Results</h3>
+                <div id="fit-results" class="results-box">
+                    <!-- R2, Params go here -->
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div id="plot-container"></div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/main.js"></script>
+</body>
+
+</html>

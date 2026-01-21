@@ -1,0 +1,5 @@
+eel
+numpy
+scipy
+pandas
+openpyxl

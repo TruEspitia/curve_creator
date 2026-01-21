@@ -1,0 +1,158 @@
+/* Base Styles */
+:root {
+    --bg-color: #1e1e1e;
+    --sidebar-bg: #252526;
+    --text-color: #d4d4d4;
+    --accent-color: #007acc;
+    --success-color: #4caf50;
+    --border-color: #3e3e42;
+}
+
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    overflow: hidden;
+    /* App-like feel */
+}
+
+.app-container {
+    display: flex;
+    height: 100vh;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 300px;
+    background-color: var(--sidebar-bg);
+    border-right: 1px solid var(--border-color);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.sidebar-header h2 {
+    margin: 0;
+    font-weight: 300;
+    letter-spacing: 1px;
+}
+
+.sidebar-section h3 {
+    font-size: 0.9em;
+    text-transform: uppercase;
+    color: #888;
+    margin-bottom: 10px;
+}
+
+/* UI Components */
+.btn {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+    font-size: 0.95em;
+    border-radius: 4px;
+    transition: background 0.2s;
+}
+
+.btn.primary {
+    background-color: var(--accent-color);
+    color: white;
+}
+
+.btn.primary:hover {
+    background-color: #0098ff;
+}
+
+.btn.success {
+    background-color: var(--success-color);
+    color: white;
+}
+
+.btn.success:hover {
+    background-color: #66bb6a;
+}
+
+.btn:disabled {
+    background-color: #444;
+    color: #888;
+    cursor: not-allowed;
+}
+
+.dropdown {
+    width: 100%;
+    padding: 8px;
+    background-color: #333;
+    border: 1px solid var(--border-color);
+    color: white;
+    border-radius: 4px;
+}
+
+.file-info {
+    font-size: 0.85em;
+    color: #aaa;
+    margin-top: 5px;
+    word-break: break-all;
+}
+
+.details-box,
+.results-box {
+    background-color: #333;
+    padding: 10px;
+    border-radius: 4px;
+    font-size: 0.85em;
+    min-height: 50px;
+}
+
+/* Tabs */
+.tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.tab-btn {
+    flex: 1;
+    padding: 6px;
+    background-color: #333;
+    border: 1px solid var(--border-color);
+    color: #888;
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 0.8em;
+}
+
+.tab-btn.active {
+    background-color: var(--accent-color);
+    color: white;
+    border-color: var(--accent-color);
+}
+
+.input-text {
+    width: 100%;
+    padding: 8px;
+    background-color: #333;
+    border: 1px solid var(--border-color);
+    color: white;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.input-text:focus {
+    border-color: var(--accent-color);
+    outline: none;
+}
+
+/* Main Content */
+.main-content {
+    flex-grow: 1;
+    position: relative;
+    background-color: var(--bg-color);
+}
+
+#plot-container {
+    width: 100%;
+    height: 100%;
+}
