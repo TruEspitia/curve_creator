@@ -5,3 +5,5 @@ KD, 1
 <FORMULA>
 # a binding isotherm
 y = A0 + A1 * x / (x + KD)
+<METADATA>
+complexity: 1

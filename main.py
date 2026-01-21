@@ -46,12 +46,13 @@ def get_functions_list():
     return [{
         "name": m.name, 
         "parameters": m.parameters, 
-        "formula": m.formula_str
+        "formula": m.formula_str,
+        "metadata": m.metadata
     } for m in models]
 
 @eel.expose
-def run_fit(function_name, col_x, col_y):
-    print(f"Fitting {function_name} using X={col_x}, Y={col_y}...")
+def run_fit(function_name, col_x, col_y, engine="sequential"):
+    print(f"Fitting {function_name} using {engine} on X={col_x}, Y={col_y}...")
     if 'current_data' not in GLOBAL_DATA:
         return {"error": "No data loaded"}
         
@@ -70,6 +71,13 @@ def run_fit(function_name, col_x, col_y):
     models = FFuncParser.get_available_functions(functions_dir)
     model = next((m for m in models if m.name == function_name), None)
     
+    if model is None:
+        return {"error": f"Function '{function_name}' not found"}
+    
+    result = OptimizationEngine.fit_data(model, x_data, y_data, engine_type=engine)
+    print(f"Fit result: {result}")
+    return result
+
     if model is None:
         return {"error": f"Function '{function_name}' not found"}
     

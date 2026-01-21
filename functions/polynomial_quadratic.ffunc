@@ -5,3 +5,5 @@ A2, -0.5
 <FORMULA>
 # a quadratic function
 y = A2 * x**2 + A1 * x + A0
+<METADATA>
+complexity: 1

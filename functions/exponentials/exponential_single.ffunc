@@ -5,3 +5,5 @@ k1, 1
 <FORMULA>
 # a single exponential function
 y = A0 + A1 * exp(-k1 * x)
+<METADATA>
+complexity: 1

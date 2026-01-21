@@ -31,6 +31,8 @@ body {
     display: flex;
     flex-direction: column;
     gap: 20px;
+    overflow-y: auto;
+    /* Enable scrolling */
 }
 
 .sidebar-header h2 {

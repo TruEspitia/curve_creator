@@ -6,3 +6,5 @@ n, 1.0000, 1
 <FORMULA>
 # a binding isotherm with Hill-type cooperativity
 y = A0 + A1 * x ** n / (x ** n + KD ** n)
+<METADATA>
+complexity: 1

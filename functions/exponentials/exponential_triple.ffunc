@@ -9,3 +9,5 @@ k3, 1.2000, 1
 <FORMULA>
 # a triple exponential function
 y = A0 + A1 * exp(-k1 * x) + A2 * exp(-k2 * x)  + A3 * exp(-k3 * x)
+<METADATA>
+complexity: 1

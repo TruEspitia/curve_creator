@@ -14,3 +14,5 @@ deltaG = deltaG0 - m * x
 K = exp(-deltaG / R / T)
 fN = 1 / (1 + K)
 y = fN * (SN + slopeN * x) + (1 - fN) * (SU + slopeU * x)
+<METADATA>
+complexity: 3

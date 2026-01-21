@@ -2,10 +2,11 @@ import os
 import numpy as np
 
 class FFuncModel:
-    def __init__(self, name, parameters, formula_str):
+    def __init__(self, name, parameters, formula_str, metadata=None):
         self.name = name
         self.parameters = parameters # dict of {param_name: default_value}
         self.formula_str = formula_str
+        self.metadata = metadata or {}
         self.compiled_formula = None
 
     def evaluate(self, x, *params):
@@ -22,10 +23,19 @@ class FFuncModel:
             'sin': np.sin,
             'cos': np.cos,
             'tan': np.tan,
+            'tan': np.tan,
             'log': np.log,
             'log10': np.log10,
             'sqrt': np.sqrt,
             'pi': np.pi,
+            'power': np.power,
+            'tanh': np.tanh,
+            'sinh': np.sinh,
+            'cosh': np.cosh,
+            'arctan': np.arctan,
+            'arcsin': np.arcsin,
+            'arccos': np.arccos,
+            'abs': np.abs
             'power': np.power,
             'tanh': np.tanh,
             'sinh': np.sinh,
@@ -58,9 +68,10 @@ class FFuncParser:
     def parse_file(filepath):
         name = os.path.basename(filepath).replace(".ffunc", "")
         parameters = {}
+        metadata = {"complexity": 1} # Default complexity
         formula_lines = []
         
-        mode = None # 'PARAMETERS' or 'FORMULA'
+        mode = None # 'PARAMETERS', 'FORMULA', 'METADATA'
         
         with open(filepath, 'r', encoding='utf-8') as f:
             for line in f:
@@ -73,8 +84,23 @@ class FFuncParser:
                 elif line == "<FORMULA>":
                     mode = "FORMULA"
                     continue
+                elif line == "<METADATA>":
+                    mode = "METADATA"
+                    continue
                 
-                if mode == "PARAMETERS":
+                if mode == "METADATA":
+                    if ":" in line:
+                        key, val = line.split(":", 1)
+                        key = key.strip().lower()
+                        if key == "complexity":
+                            try:
+                                metadata[key] = int(val.strip())
+                            except:
+                                pass
+                        else:
+                            metadata[key] = val.strip()
+
+                elif mode == "PARAMETERS":
                     # Parse "Name, Value"
                     parts = line.split(",")
                     if len(parts) >= 2:
@@ -90,7 +116,7 @@ class FFuncParser:
                     formula_lines.append(line)
         
         formula_str = " ".join(formula_lines)
-        return FFuncModel(name, parameters, formula_str)
+        return FFuncModel(name, parameters, formula_str, metadata)
 
     @staticmethod
     def get_available_functions(functions_dir):

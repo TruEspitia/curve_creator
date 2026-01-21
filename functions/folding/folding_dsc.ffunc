@@ -24,3 +24,6 @@ y = fN * (CpN + slopeN * (T - Tm)) + (1 - fN) * (CpU + slopeU * (T - Tm))
 deriv = K * (- deltaH / R / T / T + deltaCp * (Tm / T / T - np.log10(np.exp(1)) / T))
 Cpxs = - 1 / (1 + K) ** 2 * deriv
 y = y + A * Cpxs
+
+<METADATA>
+complexity: 3

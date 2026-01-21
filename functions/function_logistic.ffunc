@@ -7,3 +7,5 @@ x50, 1.0000, 1
 <FORMULA>
 # a logistic function
 y = A + C / np.power((1 + (np.power(2, T) - 1) * exp(-B *(x - x50))), 1/T)
+<METADATA>
+complexity: 3

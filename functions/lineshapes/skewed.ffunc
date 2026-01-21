@@ -10,3 +10,5 @@ if(not ('skewnorm' in locals())):
 
 xv = (x - x0) / w
 y = h * skewnorm.pdf(xv, skew)
+<METADATA>
+complexity: 1
