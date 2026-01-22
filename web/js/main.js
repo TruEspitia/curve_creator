@@ -18,16 +18,81 @@ async function init() {
 
     // 4. Initial Plot
     initPlot();
+
+    // 5. Setup UI (Theme & Mobile)
+    setupUI();
+}
+
+function setupUI() {
+    // Theme Toggle
+    const themeBtn = document.getElementById('theme-toggle');
+    const storedTheme = localStorage.getItem('theme');
+
+    if (storedTheme) {
+        document.documentElement.setAttribute('data-theme', storedTheme);
+    }
+
+    themeBtn.addEventListener('click', () => {
+        let currentTheme = document.documentElement.getAttribute('data-theme');
+        let newTheme = currentTheme === 'light' ? 'dark' : 'light';
+
+        document.documentElement.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+
+        // Update Plotly Theme
+        updatePlotTheme(newTheme);
+    });
+
+    // Mobile Sidebar Toggle
+    const menuBtn = document.getElementById('menu-toggle');
+    const sidebar = document.getElementById('sidebar');
+
+    menuBtn.addEventListener('click', () => {
+        sidebar.classList.toggle('open');
+    });
+
+    // Close sidebar when clicking outside on mobile
+    document.addEventListener('click', (e) => {
+        if (window.innerWidth <= 768) {
+            if (!sidebar.contains(e.target) && !menuBtn.contains(e.target) && sidebar.classList.contains('open')) {
+                sidebar.classList.remove('open');
+            }
+        }
+    });
+
+    // Handle Resize
+    window.addEventListener('resize', () => {
+        if (window.innerWidth > 768) {
+            sidebar.classList.remove('open');
+        }
+        // Force plot resize
+        Plotly.Plots.resize('plot-container');
+    });
+}
+
+function updatePlotTheme(theme) {
+    const layoutUpdate = {
+        paper_bgcolor: theme === 'light' ? '#ffffff' : '#1e1e1e',
+        plot_bgcolor: theme === 'light' ? '#ffffff' : '#1e1e1e',
+        font: { color: theme === 'light' ? '#333333' : '#d4d4d4' },
+        xaxis: { gridcolor: theme === 'light' ? '#e1e1e1' : '#444' },
+        yaxis: { gridcolor: theme === 'light' ? '#e1e1e1' : '#444' }
+    };
+
+    Plotly.relayout('plot-container', layoutUpdate);
 }
 
 function initPlot() {
+    const theme = document.documentElement.getAttribute('data-theme') || 'dark';
+    const isLight = theme === 'light';
+
     const layout = {
         title: 'Data Preview',
-        paper_bgcolor: '#1e1e1e',
-        plot_bgcolor: '#1e1e1e',
-        font: { color: '#d4d4d4' },
-        xaxis: { gridcolor: '#444' },
-        yaxis: { gridcolor: '#444' },
+        paper_bgcolor: isLight ? '#ffffff' : '#1e1e1e',
+        plot_bgcolor: isLight ? '#ffffff' : '#1e1e1e',
+        font: { color: isLight ? '#333333' : '#d4d4d4' },
+        xaxis: { gridcolor: isLight ? '#e1e1e1' : '#444' },
+        yaxis: { gridcolor: isLight ? '#e1e1e1' : '#444' },
         margin: { t: 40, r: 20, b: 40, l: 40 }
     };
 
@@ -223,8 +288,11 @@ function plotData(dataObj, colX, colY) {
     };
 
     let layout = document.getElementById('plot-container').layout;
-    layout.xaxis = { title: { text: colX }, gridcolor: '#444' };
-    layout.yaxis = { title: { text: colY }, gridcolor: '#444' };
+    if (!layout.xaxis.title) layout.xaxis.title = {};
+    layout.xaxis.title.text = colX;
+
+    if (!layout.yaxis.title) layout.yaxis.title = {};
+    layout.yaxis.title.text = colY;
 
     Plotly.react('plot-container', [trace], layout);
 }

@@ -1,11 +1,35 @@
-/* Base Styles */
+/* Base Styles and Theming */
 :root {
+    /* Default to Dark Theme (matches original) */
     --bg-color: #1e1e1e;
     --sidebar-bg: #252526;
     --text-color: #d4d4d4;
     --accent-color: #007acc;
     --success-color: #4caf50;
     --border-color: #3e3e42;
+    --input-bg: #333;
+    --hover-bg: #2a2d2e;
+    --card-bg: #333;
+    --plot-bg: #1e1e1e;
+    --plot-paper-bg: #1e1e1e;
+    --plot-text: #d4d4d4;
+    --plot-grid: #444;
+}
+
+[data-theme='light'] {
+    --bg-color: #ffffff;
+    --sidebar-bg: #f3f3f3;
+    --text-color: #333333;
+    --accent-color: #0078d7;
+    --success-color: #107c10;
+    --border-color: #e1e1e1;
+    --input-bg: #ffffff;
+    --hover-bg: #e5e5e5;
+    --card-bg: #ffffff;
+    --plot-bg: #ffffff;
+    --plot-paper-bg: #ffffff;
+    --plot-text: #333333;
+    --plot-grid: #e1e1e1;
 }
 
 body {
@@ -14,12 +38,14 @@ body {
     background-color: var(--bg-color);
     color: var(--text-color);
     overflow: hidden;
-    /* App-like feel */
+    transition: background-color 0.3s, color 0.3s;
 }
 
 .app-container {
     display: flex;
     height: 100vh;
+    position: relative;
+    /* For mobile overlay */
 }
 
 /* Sidebar */
@@ -32,19 +58,28 @@ body {
     flex-direction: column;
     gap: 20px;
     overflow-y: auto;
-    /* Enable scrolling */
+    transition: transform 0.3s ease, background-color 0.3s;
+    z-index: 100;
+}
+
+.sidebar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .sidebar-header h2 {
     margin: 0;
     font-weight: 300;
     letter-spacing: 1px;
+    font-size: 1.5em;
 }
 
 .sidebar-section h3 {
     font-size: 0.9em;
     text-transform: uppercase;
-    color: #888;
+    color: var(--text-color);
+    opacity: 0.7;
     margin-bottom: 10px;
 }
 
@@ -56,7 +91,11 @@ body {
     cursor: pointer;
     font-size: 0.95em;
     border-radius: 4px;
-    transition: background 0.2s;
+    transition: background-color 0.2s, transform 0.1s;
+}
+
+.btn:active {
+    transform: scale(0.98);
 }
 
 .btn.primary {
@@ -65,7 +104,7 @@ body {
 }
 
 .btn.primary:hover {
-    background-color: #0098ff;
+    filter: brightness(1.1);
 }
 
 .btn.success {
@@ -74,38 +113,48 @@ body {
 }
 
 .btn.success:hover {
-    background-color: #66bb6a;
+    filter: brightness(1.1);
 }
 
 .btn:disabled {
-    background-color: #444;
-    color: #888;
+    background-color: var(--input-bg);
+    color: var(--text-color);
+    opacity: 0.5;
     cursor: not-allowed;
+    transform: none;
 }
 
 .dropdown {
     width: 100%;
     padding: 8px;
-    background-color: #333;
+    background-color: var(--input-bg);
     border: 1px solid var(--border-color);
-    color: white;
+    color: var(--text-color);
     border-radius: 4px;
+    transition: border-color 0.2s;
+}
+
+.dropdown:focus {
+    outline: none;
+    border-color: var(--accent-color);
 }
 
 .file-info {
     font-size: 0.85em;
-    color: #aaa;
+    color: var(--text-color);
+    opacity: 0.7;
     margin-top: 5px;
     word-break: break-all;
 }
 
 .details-box,
 .results-box {
-    background-color: #333;
+    background-color: var(--card-bg);
     padding: 10px;
     border-radius: 4px;
     font-size: 0.85em;
     min-height: 50px;
+    border: 1px solid var(--border-color);
 }
 
 /* Tabs */
@@ -118,28 +167,37 @@ body {
 .tab-btn {
     flex: 1;
     padding: 6px;
-    background-color: #333;
+    background-color: var(--input-bg);
     border: 1px solid var(--border-color);
-    color: #888;
+    color: var(--text-color);
+    opacity: 0.8;
     cursor: pointer;
     border-radius: 4px;
     font-size: 0.8em;
+    transition: all 0.2s;
+}
+
+.tab-btn:hover {
+    opacity: 1;
+    background-color: var(--hover-bg);
 }
 
 .tab-btn.active {
     background-color: var(--accent-color);
     color: white;
     border-color: var(--accent-color);
+    opacity: 1;
 }
 
 .input-text {
     width: 100%;
     padding: 8px;
-    background-color: #333;
+    background-color: var(--input-bg);
     border: 1px solid var(--border-color);
-    color: white;
+    color: var(--text-color);
     border-radius: 4px;
     box-sizing: border-box;
+    transition: border-color 0.2s;
 }
 
 .input-text:focus {
@@ -152,9 +210,66 @@ body {
     flex-grow: 1;
     position: relative;
     background-color: var(--bg-color);
+    transition: background-color 0.3s;
 }
 
 #plot-container {
     width: 100%;
     height: 100%;
+}
+
+/* Header/Toggle Theme (will be added to HTML) */
+.theme-toggle {
+    background: none;
+    border: none;
+    color: var(--text-color);
+    cursor: pointer;
+    font-size: 1.2em;
+    padding: 5px;
+    border-radius: 50%;
+    transition: background-color 0.2s;
+    width: auto;
+    /* Override .btn width */
+}
+
+.theme-toggle:hover {
+    background-color: var(--hover-bg);
+}
+
+/* Mobile Toggle Button */
+.menu-toggle {
+    display: none;
+    /* Hidden on desktop */
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    z-index: 200;
+    background-color: var(--sidebar-bg);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    padding: 8px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .sidebar {
+        position: absolute;
+        height: 100%;
+        transform: translateX(-100%);
+        box-shadow: 2px 0 10px rgba(0, 0, 0, 0.5);
+    }
+
+    .sidebar.open {
+        transform: translateX(0);
+    }
+
+    .menu-toggle {
+        display: block;
+    }
+
+    .main-content {
+        width: 100%;
+    }
 }
