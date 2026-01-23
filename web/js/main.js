@@ -72,11 +72,11 @@ function setupUI() {
 
 function updatePlotTheme(theme) {
     const layoutUpdate = {
-        paper_bgcolor: theme === 'light' ? '#ffffff' : '#1e1e1e',
-        plot_bgcolor: theme === 'light' ? '#ffffff' : '#1e1e1e',
-        font: { color: theme === 'light' ? '#333333' : '#d4d4d4' },
-        xaxis: { gridcolor: theme === 'light' ? '#e1e1e1' : '#444' },
-        yaxis: { gridcolor: theme === 'light' ? '#e1e1e1' : '#444' }
+        paper_bgcolor: theme === 'light' ? '#f8fafc' : '#121212',
+        plot_bgcolor: theme === 'light' ? '#f8fafc' : '#121212',
+        font: { color: theme === 'light' ? '#1e293b' : '#e0e0e0' },
+        xaxis: { gridcolor: theme === 'light' ? '#e2e8f0' : '#333' },
+        yaxis: { gridcolor: theme === 'light' ? '#e2e8f0' : '#333' }
     };
 
     Plotly.relayout('plot-container', layoutUpdate);
@@ -88,11 +88,11 @@ function initPlot() {
 
     const layout = {
         title: 'Data Preview',
-        paper_bgcolor: isLight ? '#ffffff' : '#1e1e1e',
-        plot_bgcolor: isLight ? '#ffffff' : '#1e1e1e',
-        font: { color: isLight ? '#333333' : '#d4d4d4' },
-        xaxis: { gridcolor: isLight ? '#e1e1e1' : '#444' },
-        yaxis: { gridcolor: isLight ? '#e1e1e1' : '#444' },
+        paper_bgcolor: isLight ? '#f8fafc' : '#121212',
+        plot_bgcolor: isLight ? '#f8fafc' : '#121212',
+        font: { color: isLight ? '#1e293b' : '#e0e0e0', family: 'Inter, sans-serif' },
+        xaxis: { gridcolor: isLight ? '#e2e8f0' : '#333' },
+        yaxis: { gridcolor: isLight ? '#e2e8f0' : '#333' },
         margin: { t: 40, r: 20, b: 40, l: 40 }
     };
 
@@ -157,12 +157,20 @@ function setupListeners() {
 
         // Use a small timeout to allow UI to render modal before blocking call
         setTimeout(async () => {
+            let workingTimer = null;
             try {
+                // Set warning timeout for 30 seconds
+                workingTimer = setTimeout(() => {
+                    progressText.innerText = "Processing is taking longer than usual (30s+). The system is still working, please do not close...";
+                    progressText.style.color = "#ffeb3b"; // Yellow warning color
+                }, 30000);
+
                 if (currentTab === 'predefined') {
                     const funcName = document.getElementById('select-function').value;
                     if (!funcName) {
                         alert("Please select a function from the library.");
                         modal.style.display = 'none';
+                        if (workingTimer) clearTimeout(workingTimer);
                         return;
                     }
                     result = await eel.run_fit(funcName, colX, colY, engine)();
@@ -172,6 +180,7 @@ function setupListeners() {
                     if (!formula) {
                         alert("Please enter a formula.");
                         modal.style.display = 'none';
+                        if (workingTimer) clearTimeout(workingTimer);
                         return;
                     }
                     result = await eel.run_custom_fit(formula, params, colX, colY)();
@@ -188,8 +197,12 @@ function setupListeners() {
             } catch (e) {
                 alert("An error occurred: " + e);
             } finally {
+                // Clear warning timer
+                if (workingTimer) clearTimeout(workingTimer);
                 // Hide Modal
                 modal.style.display = 'none';
+                // Reset text style
+                progressText.style.color = "";
             }
         }, 100);
     });
@@ -329,16 +342,29 @@ function plotFit(fitResult, colX, colY) {
 
 function displayResults(result) {
     let container = document.getElementById('fit-results');
-    let html = `<div><strong>Method:</strong> ${result.engine || "Unknown"}</div>`;
-    html += `<div><strong>R²:</strong> ${result.r_squared.toFixed(4)}</div>`;
-    html += `<div><strong>RMSE:</strong> ${result.rmse ? result.rmse.toFixed(5) : "N/A"}</div>`;
-    html += `<hr/>`;
 
+    let html = `<div class="results-grid">`;
+    html += `<div class="result-label">Method</div><div class="result-value">${result.engine || "Unknown"}</div>`;
+    html += `<div class="result-label">R²</div><div class="result-value">${result.r_squared.toFixed(4)}</div>`;
+
+    if (result.rmse !== undefined && result.rmse !== null) {
+        html += `<div class="result-label">RMSE</div><div class="result-value">${result.rmse.toFixed(5)}</div>`;
+    }
+
+    html += `</div><hr style="border-color: var(--border-color); margin: 12px 0; opacity: 0.5;">`;
+
+    html += `<div class="results-grid">`;
     for (let [key, val] of Object.entries(result.parameters)) {
         let err = result.errors[key] || 0;
         let errPercent = Math.abs(err / val * 100);
-        html += `<div><strong>${key}:</strong> ${val.toExponential(3)} ± ${err.toExponential(2)} (${errPercent.toFixed(1)}%)</div>`;
+
+        html += `<div class="result-label">${key}</div>`;
+        html += `<div class="result-value">
+            ${val.toExponential(3)} 
+            <span style="font-size: 0.8em; color: var(--text-secondary); margin-left: 4px;">± ${err.toExponential(2)} (${errPercent.toFixed(1)}%)</span>
+        </div>`;
     }
+    html += `</div>`;
 
     container.innerHTML = html;
 }

@@ -6,6 +6,13 @@ from math_core.data_loader import DataLoader
 from math_core.ffunc_parser import FFuncParser, FFuncModel
 from math_core.optimization import OptimizationEngine
 
+# Configure logging to see engine debug output
+import logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(name)s - %(levelname)s - %(message)s'
+)
+
 # Initialize Eel with the web folder
 eel.init('web')
 
@@ -75,13 +82,6 @@ def run_fit(function_name, col_x, col_y, engine="sequential"):
         return {"error": f"Function '{function_name}' not found"}
     
     result = OptimizationEngine.fit_data(model, x_data, y_data, engine_type=engine)
-    print(f"Fit result: {result}")
-    return result
-
-    if model is None:
-        return {"error": f"Function '{function_name}' not found"}
-    
-    result = OptimizationEngine.fit_data(model, x_data, y_data)
     print(f"Fit result: {result}")
     return result
 

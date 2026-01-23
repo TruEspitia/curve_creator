@@ -35,18 +35,17 @@ class OptimizationEngine:
         # 2. Generate Bounds
         bounds_list = BoundsGenerator.generate_bounds(func_model, x_arr, y_arr)
         
-        # Format bounds for scipy (zip into 2 tuples for LM, list of tuples for DE)
-        min_bounds, max_bounds = zip(*bounds_list)
-        lm_bounds = (min_bounds, max_bounds)
+        # Create dictionary for new engines
+        param_names = sorted(func_model.parameters.keys())
+        bounds_dict = {name: bound for name, bound in zip(param_names, bounds_list)}
         
         # 3. Prepare Engine Options
         engine_options = options.copy()
-        engine_options['bounds'] = lm_bounds # For LM
-        engine_options['bounds_list'] = bounds_list # For DE
+        engine_options['bounds_dict'] = bounds_dict
+        engine_options['bounds_list'] = bounds_list # Keep for legacy/backup
         
-        # Generate initial guesses if not provided (from default params)
+        # Generate initial guesses if not provided
         if 'p0' not in engine_options:
-             param_names = sorted(func_model.parameters.keys())
              engine_options['p0'] = [func_model.parameters[name] for name in param_names]
 
         # 4. Select and Run Engine
@@ -99,4 +98,8 @@ class OptimizationEngine:
             return result
             
         except Exception as e:
-            return {"success": False, "error": f"Error calculating metrics: {e}"}
+            return {
+                "success": False, 
+                "error": f"Optimization failed unexpectedly: {str(e)}",
+                "message": str(e)
+            }

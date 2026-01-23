@@ -53,7 +53,28 @@ class FFuncModel:
         if "=" in formula:
             formula = formula.split("=")[1].strip()
             
-        return eval(formula, {"__builtins__": {}}, local_context)
+        try:
+            # Suppress warnings during evaluation (expected in optimization)
+            with np.errstate(divide='ignore', invalid='ignore', over='ignore'):
+                result = eval(formula, {"__builtins__": {}}, local_context)
+            
+            # Validate result
+            if not isinstance(result, np.ndarray):
+                # Handle scalar result for vector input
+                if isinstance(x, np.ndarray):
+                    result = np.full_like(x, result, dtype=float)
+                else:
+                    result = np.asarray(result)
+                
+            # Check for NaN or Inf (return as signals to optimizer, don't crash)
+            # Optimizers usually handle NaNs as bad scores, but we want to be explicit
+            # However, for evaluate(), we just return the array even if it has NaNs
+            # The engine is responsible for penalizing it.
+            return result
+            
+        except Exception as e:
+            # In case of syntax error or other eval issues
+            raise ValueError(f"Evaluation error: {str(e)}")
 
 class FFuncParser:
     @staticmethod
