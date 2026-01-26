@@ -117,7 +117,8 @@ class LMEngine(BaseEngine):
                     rmse=np.sqrt(np.mean((y_data - y_pred)**2)),
                     iterations=infodict.get('nfev', 0),
                     function_evaluations=infodict.get('nfev', 0),
-                    message=mesg
+                    message=mesg,
+                    engine_name=self.name
                 )
                 
             except (RuntimeError, LinAlgError, ValueError) as e:
@@ -128,7 +129,8 @@ class LMEngine(BaseEngine):
                     errors={name: float('inf') for name in param_names},
                     r_squared=0.0,
                     rmse=float('inf'),
-                    message=f"LM Error: {str(e)}"
+                    message=f"LM Error: {str(e)}",
+                    engine_name=self.name
                 )
     
     def _generate_initial_guesses(self, model, x_data, y_data, options):

@@ -1,3 +1,47 @@
+// Toast Notification System
+function showToast(message, type = 'info', duration = 4000) {
+    const container = document.getElementById('toast-container');
+
+    // Create toast element
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+
+    // Icon based on type
+    let icon = 'ℹ️';
+    if (type === 'success') icon = '✅';
+    if (type === 'error') icon = '❌';
+    if (type === 'warning') icon = '⚠️';
+
+    toast.innerHTML = `
+        <div class="toast-icon">${icon}</div>
+        <div class="toast-content">${message}</div>
+        <button class="toast-close">&times;</button>
+    `;
+
+    // Add to container
+    container.appendChild(toast);
+
+    // Remove after duration
+    const timeout = setTimeout(() => {
+        removeToast(toast);
+    }, duration);
+
+    // Close button click
+    toast.querySelector('.toast-close').addEventListener('click', () => {
+        clearTimeout(timeout);
+        removeToast(toast);
+    });
+}
+
+function removeToast(toast) {
+    toast.classList.add('hiding');
+    toast.addEventListener('animationend', () => {
+        if (toast.parentElement) {
+            toast.parentElement.removeChild(toast);
+        }
+    });
+}
+
 // Main Logic
 
 let currentTab = 'predefined';
@@ -108,10 +152,11 @@ function setupListeners() {
             let result = await eel.load_data_file(filePath)();
 
             if (result.error) {
-                alert("Error: " + result.error);
+                showToast("Error: " + result.error, 'error');
                 document.getElementById('data-file-info').innerText = "Error loading file";
             } else {
                 document.getElementById('data-file-info').innerText = result.filename;
+                showToast(`Loaded ${result.filename} successfully`, 'success');
                 populateColumnSelectors(result.columns);
                 plotData(result, result.columns[0], result.columns[1]);
                 enableControls();
@@ -168,7 +213,7 @@ function setupListeners() {
                 if (currentTab === 'predefined') {
                     const funcName = document.getElementById('select-function').value;
                     if (!funcName) {
-                        alert("Please select a function from the library.");
+                        showToast("Please select a function from the library.", 'warning');
                         modal.style.display = 'none';
                         if (workingTimer) clearTimeout(workingTimer);
                         return;
@@ -178,7 +223,7 @@ function setupListeners() {
                     const formula = document.getElementById('custom-formula').value;
                     const params = document.getElementById('custom-params').value;
                     if (!formula) {
-                        alert("Please enter a formula.");
+                        showToast("Please enter a Custom Formula.", 'warning');
                         modal.style.display = 'none';
                         if (workingTimer) clearTimeout(workingTimer);
                         return;
@@ -189,13 +234,14 @@ function setupListeners() {
                 console.log("Fit result:", result);
 
                 if (result.success) {
+                    showToast("Curve fitting completed successfully!", 'success');
                     displayResults(result);
                     plotFit(result, colX, colY);
                 } else {
-                    alert("Fit Failed: " + result.error);
+                    showToast("Fit Failed: " + result.error, 'error');
                 }
             } catch (e) {
-                alert("An error occurred: " + e);
+                showToast("An unusual error occurred: " + e, 'error');
             } finally {
                 // Clear warning timer
                 if (workingTimer) clearTimeout(workingTimer);

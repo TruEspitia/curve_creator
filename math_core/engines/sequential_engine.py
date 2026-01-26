@@ -1,4 +1,3 @@
-
 from .base_engine import BaseEngine, FitResult, FitOptions, OptimizationStatus
 from .de_engine import DEEngine
 from .lm_engine import LMEngine
@@ -114,6 +113,15 @@ class SequentialEngine(BaseEngine):
                            model, x_data: np.ndarray, y_data: np.ndarray) -> FitResult:
         """Selecciona inteligentemente el mejor resultado."""
         
+        # Validar que tenemos FitResult válidos
+        if de_result is None or lm_result is None:
+            self.logger.error("Invalid result objects in comparison")
+            return de_result if de_result else lm_result
+        
+        # Validar RMSE
+        de_rmse = float(de_result.rmse) if de_result.rmse is not None else float('inf')
+        lm_rmse = float(lm_result.rmse) if lm_result.rmse is not None else float('inf')
+        
         # Si LM falló, usar DE
         if not lm_result.success:
             self.logger.info("LM refinement failed, using DE result")
@@ -124,8 +132,12 @@ class SequentialEngine(BaseEngine):
             self.logger.info("Using LM result (DE failed)")
             return lm_result
         
-        # Ambos exitosos: comparar calidad
-        improvement = (de_result.rmse - lm_result.rmse) / de_result.rmse
+        # Ambos exitosos: comparar calidad (verificar que rmse sea válido)
+        if de_rmse < 1e-10 or np.isinf(de_rmse):
+            self.logger.warning(f"Invalid DE RMSE: {de_rmse}, using LM result")
+            return lm_result
+        
+        improvement = (de_rmse - lm_rmse) / de_rmse
         
         if improvement > 0.01:  # Mejora significativa (>1%)
             self.logger.info(f"LM improved RMSE by {improvement:.1%}, using LM result")

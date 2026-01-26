@@ -1,0 +1,280 @@
+
+                        <!DOCTYPE html>
+                        <html lang="en">
+                        <head>
+                            <meta charset="UTF-8">
+                            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+							<style>
+								body {
+									background-color: white; /* Ensure the iframe has a white background */
+								}
+
+								
+							</style>
+                        </head>
+                        <body>
+                            <!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arquitectura Curve Creator</title>
+    <style>
+        :root {
+            --bg-color: #f4f6f9;
+            --frontend-bg: #e3f2fd;
+            --frontend-border: #90caf9;
+            --backend-bg: #fff3e0;
+            --backend-border: #ffcc80;
+            --core-bg: #e8f5e9;
+            --core-border: #a5d6a7;
+            --text-color: #333;
+            --arrow-color: #666;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 { margin-bottom: 40px; text-transform: uppercase; color: #2c3e50; }
+
+        /* Contenedor Principal */
+        .diagram-container {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+            width: 100%;
+            max-width: 900px;
+            position: relative;
+        }
+
+        /* Cajas de Capas (Frontend/Backend) */
+        .layer {
+            border: 2px solid;
+            border-radius: 12px;
+            padding: 20px;
+            position: relative;
+        }
+
+        .layer-title {
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            background: var(--bg-color);
+            padding: 0 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 0.9em;
+            letter-spacing: 1px;
+        }
+
+        /* Estilos específicos por capa */
+        .frontend {
+            background-color: var(--frontend-bg);
+            border-color: var(--frontend-border);
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px;
+        }
+        .frontend .layer-title { background: var(--frontend-bg); color: #1565c0; border: 1px solid var(--frontend-border); border-radius: 4px; top: -14px;}
+
+        .backend {
+            background-color: var(--backend-bg);
+            border-color: var(--backend-border);
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: auto auto;
+            gap: 20px;
+        }
+        .backend .layer-title { background: var(--backend-bg); color: #ef6c00; border: 1px solid var(--backend-border); border-radius: 4px; top: -14px;}
+
+        .math-core {
+            grid-column: 1 / -1; /* Ocupa todo el ancho */
+            background-color: var(--core-bg);
+            border: 2px dashed var(--core-border);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+
+        /* Componentes individuales */
+        .component {
+            background: white;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            transition: transform 0.2s;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-height: 60px;
+        }
+
+        .component:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        
+        .comp-title { font-weight: bold; margin-bottom: 5px; font-size: 0.95em; }
+        .comp-desc { font-size: 0.75em; color: #666; }
+
+        /* Estilos especiales para componentes */
+        .c-main { border-left: 4px solid #ef6c00; }
+        .c-seq { border-left: 4px solid #2e7d32; background-color: #f1f8e9; }
+        .c-db { border-radius: 0 12px 12px 0; border-left: 4px solid #666; position: relative;}
+        .c-db::before { content:''; position: absolute; left: 3px; top: 0; bottom: 0; width: 2px; border-left: 1px solid #ccc; }
+
+        /* Flechas de conexión (CSS puro) */
+        .arrow-down {
+            align-self: center;
+            width: 2px;
+            height: 40px;
+            background-color: var(--arrow-color);
+            position: relative;
+        }
+        .arrow-down::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: -4px;
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-top: 8px solid var(--arrow-color);
+        }
+
+        .connection-label {
+            position: absolute;
+            top: 50%;
+            left: 10px;
+            transform: translateY(-50%);
+            background: var(--bg-color);
+            padding: 2px 8px;
+            font-size: 0.8em;
+            color: #555;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            white-space: nowrap;
+        }
+
+        /* Subgrid para el núcleo matemático */
+        .engines-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        /* Responsividad */
+        @media (max-width: 768px) {
+            .frontend, .backend, .engines-grid { grid-template-columns: 1fr; }
+            .math-core { grid-column: 1; }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Arquitectura Técnica - Curve Creator</h1>
+
+    <div class="diagram-container">
+        
+        <!-- FRONTEND LAYER -->
+        <div class="layer frontend">
+            <div class="layer-title">Capa Frontend (Web/JS)</div>
+            
+            <div class="component">
+                <div class="comp-title">UI / HTML5</div>
+                <div class="comp-desc">Estructura & CSS</div>
+            </div>
+            <div class="component">
+                <div class="comp-title">App Logic</div>
+                <div class="comp-desc">JavaScript Vanilla</div>
+            </div>
+            <div class="component">
+                <div class="comp-title">Plotly.js</div>
+                <div class="comp-desc">Visualización Interactiva</div>
+            </div>
+        </div>
+
+        <!-- CONECTOR FRONTEND-BACKEND -->
+        <div class="arrow-down">
+            <div class="connection-label">JSON Bridge (Eel Library)</div>
+        </div>
+
+        <!-- BACKEND LAYER -->
+        <div class="layer backend">
+            <div class="layer-title">Capa Backend (Python)</div>
+
+            <!-- Fila superior del backend -->
+            <div class="component c-main" style="grid-column: span 2;">
+                <div class="comp-title">Main Entry (main.py)</div>
+                <div class="comp-desc">API Server & Control de Flujo</div>
+            </div>
+
+            <div class="component">
+                <div class="comp-title">DataLoader</div>
+                <div class="comp-desc">Pandas / Parsing CSV/Excel</div>
+            </div>
+
+            <div class="component">
+                <div class="comp-title">FFuncParser</div>
+                <div class="comp-desc">Intérprete de modelos</div>
+            </div>
+
+            <!-- Fila media: Orquestador -->
+            <div class="component" style="grid-column: span 4; background-color: #fff8e1;">
+                <div class="comp-title">OptimizationEngine</div>
+                <div class="comp-desc">Orquestador de Ajuste, Validación y Límites</div>
+            </div>
+
+            <!-- NUCLEO MATEMATICO -->
+            <div class="math-core">
+                <div style="text-align: center; color: #2e7d32; font-weight: bold; margin-bottom: 10px; font-size: 0.9em;">NÚCLEO MATEMÁTICO (Scipy Wrapper)</div>
+                <div class="engines-grid">
+                    <div class="component">
+                        <div class="comp-title">DE Engine</div>
+                        <div class="comp-desc">Differential Evolution<br>(Global)</div>
+                    </div>
+                    
+                    <div class="component c-seq">
+                        <div class="comp-title">Sequential Engine</div>
+                        <div class="comp-desc">Híbrido (DE + LM)<br>Estrategia Adaptativa</div>
+                    </div>
+
+                    <div class="component">
+                        <div class="comp-title">LM Engine</div>
+                        <div class="comp-desc">Levenberg-Marquardt<br>(Local)</div>
+                    </div>
+                </div>
+            </div>
+
+        </div> <!-- Fin Backend -->
+
+        <!-- ALMACENAMIENTO (ARCHIVOS) -->
+        <div style="display: flex; gap: 20px; justify-content: center;">
+            <div class="component c-db">
+                <div class="comp-title">Archivos .ffunc</div>
+                <div class="comp-desc">Definiciones de Modelos</div>
+            </div>
+            <div class="component c-db">
+                <div class="comp-title">Data Files</div>
+                <div class="comp-desc">CSV, XLSX, TXT</div>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>
+
+							<script>
+                            	
+							</script>
+                        </body>
+                        </html>
+                    

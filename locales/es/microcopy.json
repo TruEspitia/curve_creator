@@ -1,0 +1,93 @@
+{
+  "cta": {
+    "primary": "Crear ahora",
+    "continue": "Continuar",
+    "save_and_continue": "Guardar y seguir",
+    "submit": "Enviar",
+    "cancel": "Cancelar",
+    "save_draft": "Guardar borrador",
+    "confirm_delete": "Sí, eliminar",
+    "apply_changes": "Aplicar cambios",
+    "delete_permanent": "Eliminar permanentemente",
+    "create_project": "Crear proyecto",
+    "upload_files": "Subir archivos",
+    "publish": "Publicar"
+  },
+  "form": {
+    "labels": {
+      "email": "Correo electrónico",
+      "password": "Contraseña",
+      "project_name": "Nombre del proyecto"
+    },
+    "placeholders": {
+      "email": "ej. juan@ejemplo.com",
+      "password": "Mín. 8 caracteres",
+      "project_name": "Nombre descriptivo"
+    },
+    "help": {
+      "password": "Usa letras y números; sin caracteres especiales",
+      "email_privacy": "No compartiremos tu email"
+    },
+    "actions": {
+      "retry": "Reintentar",
+      "validate": "Validar"
+    }
+  },
+  "success": {
+    "saved": "Guardado correctamente",
+    "created": "Proyecto creado",
+    "applied": "Cambio aplicado",
+    "saved_with_action": "Guardado correctamente. Ver proyecto",
+    "sent": "Enviado. Revisa tu bandeja de entrada"
+  },
+  "validation_errors": {
+    "required": "Este campo es obligatorio",
+    "invalid_format": "Formato inválido. Usa el formato correcto",
+    "invalid_email": "Introduce un correo válido (ej. usuario@dominio.com)",
+    "length": "Debe tener entre {min} y {max} caracteres"
+  },
+  "network_errors": {
+    "no_connection": "No se pudo conectar. Comprueba tu conexión e inténtalo de nuevo",
+    "server_error": "Ocurrió un error en el servidor. Intenta más tarde o contacta soporte",
+    "timeout": "La solicitud tardó demasiado. Reintenta"
+  },
+  "auth_errors": {
+    "no_permission": "No tienes permisos para esta acción. Contacta al administrador",
+    "session_expired": "Sesión expirada. Inicia sesión de nuevo",
+    "bad_credentials": "Usuario o contraseña incorrectos"
+  },
+  "actionable_errors": {
+    "upload_failed": "No se pudo subir el archivo. Reintenta o prueba con un archivo más pequeño",
+    "autosave_failed": "Guardado automático falló. Guarda manualmente o copia tu trabajo",
+    "edit_conflict": "Otro usuario editó esto. Revisa los cambios y confirma si deseas sobrescribir"
+  },
+  "confirmations": {
+    "delete": "¿Eliminar este elemento? Esta acción no se puede deshacer.",
+    "unsaved_changes": "Hay cambios sin guardar. ¿Salir sin guardar?",
+    "irreversible": "Esta acción es irreversible. Confirma para continuar."
+  },
+  "empty_states": {
+    "no_projects": "Aún no tienes proyectos. Crea tu primer proyecto",
+    "onboarding_steps": [
+      "Crea un proyecto nuevo",
+      "Sube tus recursos",
+      "Publica o comparte"
+    ],
+    "onboarding_cta": "Te guiamos en 3 pasos para empezar. ¿Quieres el tour?"
+  },
+  "loading": {
+    "loading": "Cargando…",
+    "progress": "Cargando — {percent}% completado",
+    "long_wait": "Estamos procesando esto. Puede tardar unos minutos."
+  },
+  "accessibility": {
+    "close_button": "Cerrar diálogo",
+    "info_icon": "Más información sobre {topic}",
+    "announced_error": "Error: {message}"
+  },
+  "recommendations": {
+    "cta_length": "Mantener frases cortas; empezar con verbo (Crear, Guardar, Enviar)",
+    "error_solution": "Siempre ofrecer un siguiente paso o solución en mensajes de error",
+    "tone_consistency": "Usar lenguaje consistente y activo"
+  }
+}

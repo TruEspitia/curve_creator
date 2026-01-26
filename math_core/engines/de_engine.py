@@ -73,12 +73,19 @@ class DEEngine(BaseEngine):
         def callback_wrapper(xk, convergence):
             nonlocal iteration_count
             iteration_count += 1
-            # Recalculate cost for history (expensive, but useful for debugging)
-            cost = _de_objective_func(xk, model, x_data, y_data, weights, bounds, param_names)
-            convergence_history.append(cost)
+            # Recalculate cost for history
+            try:
+                cost = _de_objective_func(xk, model, x_data, y_data, weights, bounds, param_names)
+                if isinstance(cost, (int, float)) and not np.isnan(cost):
+                    convergence_history.append(float(cost))
+            except:
+                pass  # Ignorar errores en callback
             
-            if options.iteration_callback:
-                options.iteration_callback(iteration_count, xk, convergence)
+            if options.iteration_callback and callable(options.iteration_callback):
+                try:
+                    options.iteration_callback(iteration_count, xk, convergence)
+                except:
+                    pass
             
             return False  # No detener optimización
         
@@ -176,7 +183,8 @@ class DEEngine(BaseEngine):
             iterations=best_result.nit,
             function_evaluations=best_result.nfev,
             convergence_history=convergence_history,
-            message=f"DE completed with strategy: {getattr(best_result, 'strategy_used', 'unknown')}"
+            message=f"DE completed with strategy: {getattr(best_result, 'strategy_used', 'unknown')}",
+            engine_name=self.name
         )
     
     def _prepare_de_bounds(self, model, x_data, y_data, options):

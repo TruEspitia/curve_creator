@@ -1,0 +1,37 @@
+{
+  "thresholds": {
+    "small": {
+      "desc_length": 300,
+      "files_changed": 3,
+      "estimated_loc": 200
+    },
+    "medium": {
+      "desc_length": 1200,
+      "files_changed": 10,
+      "estimated_loc": 2000
+    }
+  },
+  "policies": {
+    "small": {
+      "maxInteractions": 3,
+      "preferredMode": "single_turn",
+      "autoSummarize": true,
+      "suggestSplit": false
+    },
+    "medium": {
+      "maxInteractions": 8,
+      "preferredMode": "multi_turn_compact",
+      "autoSummarize": true,
+      "suggestSplit": true
+    },
+    "large": {
+      "maxInteractions": 20,
+      "preferredMode": "multi_turn_full",
+      "autoSummarize": false,
+      "suggestSplit": true
+    }
+  },
+  "monitoring": {
+    "metrics": ["applied_policy", "task_outcome", "interactions_used", "retries"]
+  }
+}

@@ -43,17 +43,38 @@ class FitResult:
     strategy_used: str = ""
 
     def to_dict(self):
-        """Helper for backward compatibility"""
+        """Helper for backward compatibility - retorna diccionario limpio"""
+        # Convertir parámetros a tipos seguros
+        try:
+            params_dict = {}
+            if isinstance(self.parameters, dict):
+                for k, v in self.parameters.items():
+                    params_dict[str(k)] = float(v) if v is not None else 0.0
+            
+            errors_dict = {}
+            if isinstance(self.errors, dict):
+                for k, v in self.errors.items():
+                    errors_dict[str(k)] = float(v) if v is not None else 0.0
+        except (TypeError, ValueError) as e:
+            self.logger.warning(f"Type conversion error in to_dict: {e}")
+            params_dict = {}
+            errors_dict = {}
+        
+        # Retornar diccionario con todos los campos necesarios
         return {
-            "success": self.success,
-            "popt": list(self.parameters.values()), # Approximate
-            "perr": list(self.errors.values()),     # Approximate
-            "parameters": self.parameters,
-            "errors": self.errors,
-            "r_squared": self.r_squared,
-            "rmse": self.rmse,
-            "message": self.message,
-            "engine": self.engine_name
+            "success": bool(self.success),
+            "popt": list(params_dict.values()) if params_dict else [],
+            "perr": list(errors_dict.values()) if errors_dict else [],
+            "parameters": params_dict,
+            "errors": errors_dict,
+            "r_squared": float(self.r_squared) if self.r_squared is not None else 0.0,
+            "rmse": float(self.rmse) if self.rmse is not None else float('inf'),
+            "message": str(self.message) if self.message else "",
+            "engine": str(self.engine_name),
+            "fitted_curve": [],
+            "residuals": [],
+            "iterations": int(self.iterations) if self.iterations else 0,
+            "function_evaluations": int(self.function_evaluations) if self.function_evaluations else 0
         }
 
 class BaseEngine(ABC):
@@ -137,7 +158,8 @@ class BaseEngine(ABC):
             errors={},
             r_squared=0.0,
             rmse=float('inf'),
-            message=message
+            message=message,
+            engine_name=self.name
         )
 
     def _calculate_r_squared(self, y_true, y_pred):

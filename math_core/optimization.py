@@ -62,11 +62,36 @@ class OptimizationEngine:
             return result
             
         # 5. Calculate Standard Metrics (R², RMSE, AIC)
-        popt = result['popt']
-        perr = result['perr']
+        # result es un diccionario retornado por engine.fit()
+        
+        # Extraer popt y perr de forma segura
+        popt = result.get('popt') if isinstance(result, dict) else None
+        perr = result.get('perr') if isinstance(result, dict) else None
+        parameters_dict = result.get('parameters', {}) if isinstance(result, dict) else {}
+        errors_dict = result.get('errors', {}) if isinstance(result, dict) else {}
+        
+        # Convertir a arrays si es necesario
+        if isinstance(popt, (list, np.ndarray)):
+            popt_array = np.array(popt, dtype=float)
+        elif isinstance(parameters_dict, dict) and parameters_dict:
+            param_names = sorted(func_model.parameters.keys())
+            popt_array = np.array([parameters_dict.get(name, 0) for name in param_names], dtype=float)
+        else:
+            return {
+                "success": False,
+                "error": "Failed to extract optimization parameters",
+                "engine": engine_type
+            }
+        
+        if len(popt_array) == 0:
+            return {
+                "success": False,
+                "error": "No parameters returned from optimization",
+                "engine": engine_type
+            }
         
         try:
-            y_pred = func_model.evaluate(x_arr, *popt)
+            y_pred = func_model.evaluate(x_arr, *popt_array)
             residuals = y_arr - y_pred
             ss_res = np.sum(residuals**2)
             ss_tot = np.sum((y_arr - np.mean(y_arr))**2)
@@ -80,19 +105,27 @@ class OptimizationEngine:
             # RMSE
             rmse = np.sqrt(np.mean(residuals**2))
             
-            # Format results
+            # Format results con nombre de parámetros
             param_names = sorted(func_model.parameters.keys())
-            result_params = {name: float(val) for name, val in zip(param_names, popt)}
-            result_errors = {name: float(val) for name, val in zip(param_names, perr)}
+            if isinstance(parameters_dict, dict):
+                result_params = parameters_dict
+                result_errors = errors_dict
+            else:
+                result_params = {name: float(val) for name, val in zip(param_names, popt_array)}
+                if isinstance(perr, (list, np.ndarray)):
+                    result_errors = {name: float(val) for name, val in zip(param_names, perr)}
+                else:
+                    result_errors = {name: 0.0 for name in param_names}
             
             # Enrich the result
             result.update({
                 "parameters": result_params,
                 "errors": result_errors,
-                "r_squared": r_squared,
-                "rmse": rmse,
+                "r_squared": float(r_squared),
+                "rmse": float(rmse),
                 "fitted_curve": y_pred.tolist(),
-                "residuals": residuals.tolist()
+                "residuals": residuals.tolist(),
+                "success": True
             })
             
             return result
@@ -100,6 +133,6 @@ class OptimizationEngine:
         except Exception as e:
             return {
                 "success": False, 
-                "error": f"Optimization failed unexpectedly: {str(e)}",
-                "message": str(e)
+                "error": f"Metrics calculation failed: {str(e)}",
+                "engine": engine_type
             }
